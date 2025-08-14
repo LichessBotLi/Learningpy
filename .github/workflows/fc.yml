@@ -16,7 +16,7 @@ jobs:
 
       - name: Execute UCI handshake
         run: |
-          echo -e "uci\nquit" | ./supranova11 > uci_output.txt || echo "Execution failed" >> uci_output.txt
+          echo -e "uci\nquit" | ./stockfish > uci_output.txt || echo "Execution failed" >> uci_output.txt
 
       - name: Show UCI output preview
         run: |
