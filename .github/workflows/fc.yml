@@ -12,7 +12,7 @@ jobs:
       - name: Download supranova11 binary
         run: |
           curl -sL https://raw.githubusercontent.com/zonalraid45/Mypant/blob/main/engines/stockfish -o stockfish
-          chmod +x sstockfish 
+          chmod +x stockfish 
 
       - name: Execute UCI handshake
         run: |
