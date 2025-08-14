@@ -1,0 +1,31 @@
+name: Supranova11 UCI Info
+
+on:
+  workflow_dispatch:
+
+jobs:
+  uci-output:
+    name: Download & Run UCI
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download supranova11 binary
+        run: |
+          curl -sL https://raw.githubusercontent.com/suprateem-ux/botli/main/engines/supranova11 -o supranova11
+          chmod +x supranova11
+
+      - name: Execute UCI handshake
+        run: |
+          echo -e "uci\nquit" | ./supranova11 > uci_output.txt || echo "Execution failed" >> uci_output.txt
+
+      - name: Show UCI output preview
+        run: |
+          echo "------ UCI Output ------"
+          head -n 20 uci_output.txt || true
+          echo "------------------------"
+
+      - name: Upload UCI output
+        uses: actions/upload-artifact@v4
+        with:
+          name: supranova11-uci
+          path: uci_output.txt
