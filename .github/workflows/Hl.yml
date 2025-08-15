@@ -1,27 +1,16 @@
-name: Engine Similarity Proof
+name: UCI Options Similarity
 
 on:
   workflow_dispatch:
 
 jobs:
-  compare:
+  compare_uci:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Install dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y curl binutils bc
-
-      - name: Copy Supranova author file
-        run: |
-          cp supra.txt author_supra.txt
-
-      - name: Download Viridithas author file
-        run: |
-          curl -sL https://raw.githubusercontent.com/cosmobobak/viridithas/main/author.txt -o author_viri.txt
+        run: sudo apt install -y curl bc
 
       - name: Download engines
         run: |
@@ -34,39 +23,21 @@ jobs:
           echo -e "uci\nquit" | ./supranova11.0 > uci_supra.txt || echo "Supranova11.0 failed"
           echo -e "uci\nquit" | ./viridithas > uci_viri.txt || echo "Viridithas failed"
 
-      - name: Extract strings
+      - name: Compute UCI similarity
         run: |
-          strings -n 6 supranova11.0 | sort -u > strings_supra.txt || echo "Supranova11.0 strings failed"
-          strings -n 6 viridithas | sort -u > strings_viri.txt || echo "Viridithas strings failed"
-
-      - name: Compute similarities
-        run: |
-          # UCI options similarity
-          uci_total=$(cat uci_supra.txt uci_viri.txt | sort -u | wc -l)
-          uci_common=$(comm -12 <(sort uci_supra.txt) <(sort uci_viri.txt) | wc -l)
-          uci_percent=$(echo "scale=2; $uci_common/$uci_total*100" | bc)
-
-          # Strings similarity
-          total_supra=$(wc -l < strings_supra.txt)
-          total_viri=$(wc -l < strings_viri.txt)
-          common=$(comm -12 strings_supra.txt strings_viri.txt | wc -l)
-          string_percent=$(echo "scale=2; $common/($total_supra+$total_viri-$common)*100" | bc)
-
-          # Author file similarity
-          total_author=$(cat author_supra.txt author_viri.txt | sort -u | wc -l)
-          common_author=$(comm -12 <(sort author_supra.txt) <(sort author_viri.txt) | wc -l)
-          author_percent=$(echo "scale=2; $common_author/$total_author*100" | bc)
-
-          # Weighted final score (UCI 30%, Strings 30%, Author 40%)
-          final=$(echo "scale=2; ($uci_percent*0.3 + $string_percent*0.3 + $author_percent*0.4)" | bc)
-
-          echo "===== ENGINE SIMILARITY REPORT ====="
-          echo "UCI options similarity: $uci_percent%"
-          echo "Strings similarity:     $string_percent%"
-          echo "Author file similarity: $author_percent%"
-          echo "FINAL PROOF SCORE:      $final%"
-          if (( $(echo "$final >= 80" | bc -l) )); then
-            echo "Verdict: Supranova11.0 is highly likely Viridithas (rebrand/mod)"
+          total_supra=$(wc -l < uci_supra.txt)
+          total_viri=$(wc -l < uci_viri.txt)
+          common=$(comm -12 <(sort uci_supra.txt) <(sort uci_viri.txt) | tee common_lines.txt | wc -l)
+          percent=$(echo "scale=2; $common/($total_supra + $total_viri - $common)*100" | bc)
+          
+          echo "===== UCI OPTIONS SIMILARITY REPORT ====="
+          echo "Total Supranova11.0 lines: $total_supra"
+          echo "Total Viridithas lines:    $total_viri"
+          echo "Common lines:              $common"
+          echo "Similarity percentage:     $percent%"
+          echo "----------------------------------------"
+          if (( $(echo "$percent >= 80" | bc -l) )); then
+            echo "Verdict: Engines are highly similar (possible rebrand/mod)"
           else
-            echo "Verdict: Supranova11.0 is NOT Viridithas"
+            echo "Verdict: Engines are NOT highly similar"
           fi
