@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Download supranova11 binary
         run: |
-          curl -sL https://raw.githubusercontent.com/suprateem-ux/botli/main/engines/supranova11 -o supranova11
+          curl -sL https://raw.githubusercontent.com/suprateem-ux/botli/main/engines/Supranova11.0 -o supranova11
           chmod +x supranova11
 
       - name: Execute UCI handshake
