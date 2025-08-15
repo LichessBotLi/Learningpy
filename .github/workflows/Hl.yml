@@ -17,7 +17,7 @@ jobs:
 
       - name: Copy Supranova author file
         run: |
-          cp ~/supra.txt author_supra.txt
+          cp supra.txt author_supra.txt
 
       - name: Download Viridithas author file
         run: |
