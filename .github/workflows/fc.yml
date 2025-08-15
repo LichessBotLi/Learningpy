@@ -19,9 +19,11 @@ jobs:
 
       - name: Extract UCI options via strings
         run: |
-          strings -n 6 viridithas | grep -i "option\|id" > uci_viri.txt
+          # Extract lines containing "option" or "id"; don't fail if none found
+          strings -n 6 viridithas | grep -i "option\|id" > uci_viri.txt || true
+          
           echo "------ Viridithas UCI Output (first 20 lines) ------"
-          head -n 20 uci_viri.txt
+          head -n 20 uci_viri.txt || true
           echo "---------------------------------------------------"
 
       - name: Upload UCI output
