@@ -1,0 +1,14 @@
+SupraNova by Suprateem
+info string hash initialisation of 16mb complete in 1701us
+id name SupraNova
+id author Suprateem
+option name Hash type spin default 16 min 1 max 1048576
+option name Threads type spin default 1 min 1 max 512
+option name PrettyPrint type check default false
+option name SyzygyPath type string default <empty>
+option name SyzygyProbeLimit type spin default 6 min 0 max 6
+option name SyzygyProbeDepth type spin default 1 min 1 max 100
+option name Contempt type spin default 0 min -10000 max 10000
+option name Ponder type check default false
+option name UCI_Chess960 type check default false
+uciok
