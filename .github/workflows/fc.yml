@@ -1,4 +1,4 @@
-name: Supranova11 UCI Info
+name: Viridithas UCI Info
 
 on:
   workflow_dispatch:
@@ -9,14 +9,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download supranova11 binary
+      - name: Download Viridithas binary
         run: |
-          curl -sL https://raw.githubusercontent.com/suprateem-ux/botli/main/engines/Supranova11.0 -o supranova11
-          chmod +x supranova11
+          curl -sL https://github.com/cosmobobak/viridithas/releases/download/v18.0.0/viridithas-linux -o viridithas
+          chmod +x viridithas
 
       - name: Execute UCI handshake
         run: |
-          echo -e "uci\nquit" | ./supranova11 > uci_output.txt || echo "Execution failed" >> uci_output.txt
+          echo -e "uci\nquit" | ./viridithas > uci_output.txt || echo "Execution failed" >> uci_output.txt
 
       - name: Show UCI output preview
         run: |
@@ -27,5 +27,5 @@ jobs:
       - name: Upload UCI output
         uses: actions/upload-artifact@v4
         with:
-          name: supranova11-uci
+          name: viridithas-uci
           path: uci_output.txt
