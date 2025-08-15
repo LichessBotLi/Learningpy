@@ -5,27 +5,27 @@ on:
 
 jobs:
   uci-output:
-    name: Download & Run UCI
     runs-on: ubuntu-latest
-
     steps:
+      - uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: sudo apt update && sudo apt install -y curl
+
       - name: Download Viridithas binary
         run: |
           curl -sL https://github.com/cosmobobak/viridithas/releases/download/v18.0.0/viridithas-linux -o viridithas
           chmod +x viridithas
 
-      - name: Execute UCI handshake
+      - name: Extract UCI options via strings
         run: |
-          echo -e "uci\nquit" | ./viridithas > uci_output.txt || echo "Execution failed" >> uci_output.txt
-
-      - name: Show UCI output preview
-        run: |
-          echo "------ UCI Output ------"
-          head -n 20 uci_output.txt || true
-          echo "------------------------"
+          strings -n 6 viridithas | grep -i "option\|id" > uci_viri.txt
+          echo "------ Viridithas UCI Output (first 20 lines) ------"
+          head -n 20 uci_viri.txt
+          echo "---------------------------------------------------"
 
       - name: Upload UCI output
         uses: actions/upload-artifact@v4
         with:
           name: viridithas-uci
-          path: uci_output.txt
+          path: uci_viri.txt
